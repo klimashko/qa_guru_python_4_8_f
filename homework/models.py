@@ -13,12 +13,14 @@ class Product:
         self.description = description
         self.quantity = quantity
 
+
     def check_quantity(self, quantity) -> bool:
         """
         TODO Верните True если количество продукта больше или равно запрашиваемому
             и False в обратном случае
         """
-        raise NotImplementedError
+        return self.quantity >= quantity
+
 
     def buy(self, quantity):
         """
@@ -26,7 +28,14 @@ class Product:
             Проверьте количество продукта используя метод check_quantity
             Если продуктов не хватает, то выбросите исключение ValueError
         """
-        raise NotImplementedError
+        if self.check_quantity(quantity) is True:
+            self.quantity -= quantity
+        else:
+            raise ValueError
+
+        return self.quantity
+
+
 
     def __hash__(self):
         return hash(self.name + self.description)
@@ -50,7 +59,13 @@ class Cart:
         Метод добавления продукта в корзину.
         Если продукт уже есть в корзине, то увеличиваем количество
         """
-        raise NotImplementedError
+        if product not in self.products:
+            self.products[product] = quantity
+        else:
+            self.products[product] += quantity
+
+        return [product.name, self.products[product]]
+
 
     def remove_product(self, product: Product, quantity=None):
         """
@@ -58,13 +73,28 @@ class Cart:
         Если quantity не передан, то удаляется вся позиция
         Если quantity больше, чем количество продуктов в позиции, то удаляется вся позиция
         """
-        raise NotImplementedError
+
+        if product in self.products and quantity is None:
+            self.products.pop(product)
+            reason_removed = 'product quantity to buy not received'
+            text = f'{product.name} was removed from cart. Reason: {reason_removed}'
+        elif product in self.products and quantity > product.quantity:
+            self.products.pop(product)
+            reason_removed = 'product quantity to buy is more than stock'
+            text = f'{product.name} was removed from cart. Reason: {reason_removed}'
+        else:
+            text ='Nothing removed from cart'
+
+        return text
+
 
     def clear(self):
-        raise NotImplementedError
+        return self.products.clear()
+
 
     def get_total_price(self) -> float:
-        raise NotImplementedError
+        return sum(self.products[product] * product.price for product in self.products)
+
 
     def buy(self):
         """
@@ -72,4 +102,12 @@ class Cart:
         Учтите, что товаров может не хватать на складе.
         В этом случае нужно выбросить исключение ValueError
         """
-        raise NotImplementedError
+
+        for product in self.products:
+            if self.products[product] > product.quantity:
+                raise ValueError
+
+        total_price = sum(product.price * quantity for product, quantity in self.products.items())
+        self.products.clear()
+
+        return total_price
