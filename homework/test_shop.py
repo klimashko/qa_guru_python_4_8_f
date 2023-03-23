@@ -33,21 +33,28 @@ class TestProducts:
     def test_product_check_quantity(self, product):
         # TODO напишите проверки на метод check_quantity
 
-        less_quantity = product.quantity - 1
         equal_quantity = product.quantity
-        more_quantity = product.quantity + 1
+        assert product.check_quantity(
+            equal_quantity) is True, 'check_quantity() working not correct with equal_quantity'
 
-        assert product.check_quantity(less_quantity) is True, 'check_quantity() working not correct with less_quantity'
-        assert product.check_quantity(equal_quantity) is True, 'check_quantity() working not correct with equal_quantity'
-        assert product.check_quantity(more_quantity) is False, 'check_quantity() working not correct with more_quantity'
+        less_quantity = product.quantity - 1
+        assert product.check_quantity(
+            less_quantity) is True, 'check_quantity() working not correct with less_quantity'
+
+        more_quantity = product.quantity + 1
+        assert product.check_quantity(
+            more_quantity) is False, 'check_quantity() working not correct with more_quantity'
+
+
 
     def test_product_buy(self, product):
         # TODO напишите проверки на метод buy
+        equal_quantity = product.quantity
+        assert product.buy(equal_quantity) == 0, 'failed with equal quantity'
+
         less_quantity = product.quantity - 1
         assert product.buy(less_quantity) == 1, 'failed with less quantity'
 
-        equal_quantity = product.quantity
-        assert product.buy(equal_quantity) == 0, 'failed with equal quantity'
 
     def test_product_buy_more_than_available(self, product):
         # TODO напишите проверки на метод buy,
@@ -66,13 +73,11 @@ class TestCart:
     """
 
     def test_add_product(self, product, cart):
-        # cart = Cart()
         assert cart.add_product(product, quantity=5) == ['book', 5], 'failed with adding to empty cart'
         assert cart.add_product(product, quantity=100) == ['book', 105], 'failed with adding to product in cart'
 
 
     def test_remove_product(self, product: Product, cart, quantity=None):
-        # cart = Cart()
 
         assert cart.remove_product(product) == 'nothing removed from cart', 'not correct with empty cart'
 
@@ -84,7 +89,6 @@ class TestCart:
 
 
     def test_clear(self, product, copybook, pencil, cart):
-        # cart = Cart()
         cart.add_product(copybook, 150)
         cart.add_product(pencil, 300)
         cart.clear()
@@ -93,12 +97,9 @@ class TestCart:
 
 
     def test_get_total_price(self, product, copybook, pencil, cart):
-        # cart = Cart()
         cart.add_product(product, 1)
         cart.add_product(copybook, 2)
         cart.add_product(pencil, 4)
-        print(cart.products)
-        print(cart.get_total_price())
 
         assert cart.get_total_price() == 300, 'Total price not correct'
 
