@@ -107,6 +107,5 @@ class Cart:
                 raise ValueError
 
         total_price = sum(value * key.price for key, value in self.products.items())
-        self.products.clear()
 
         return total_price, self.products.clear()
