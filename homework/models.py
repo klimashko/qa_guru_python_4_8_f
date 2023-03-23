@@ -76,20 +76,19 @@ class Cart:
 
         if product in self.products and quantity is None:
             self.products.pop(product)
-            reason_removed = 'product quantity to buy not received'
-            text = f'{product.name} was removed from cart. Reason: {reason_removed}'
+            text = 'product removed from cart, quantity to buy not received'
         elif product in self.products and quantity > product.quantity:
             self.products.pop(product)
-            reason_removed = 'product quantity to buy is more than stock'
-            text = f'{product.name} was removed from cart. Reason: {reason_removed}'
+            text = 'product removed from cart, quantity to buy more than stock'
         else:
-            text ='Nothing removed from cart'
+            text = 'nothing removed from cart'
 
         return text
 
 
     def clear(self):
-        return self.products.clear()
+        self.products.clear()
+        return self.products
 
 
     def get_total_price(self) -> float:
@@ -107,7 +106,7 @@ class Cart:
             if self.products[product] > product.quantity:
                 raise ValueError
 
-        total_price = sum(product.price * quantity for product, quantity in self.products.items())
+        total_price = sum(value * key.price for key, value in self.products.items())
         self.products.clear()
 
-        return total_price
+        return total_price, self.products.clear()

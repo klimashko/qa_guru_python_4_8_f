@@ -10,6 +10,19 @@ from homework.models import Product, Cart
 def product():
     return Product("book", 100, "This is a book", 1000)
 
+@pytest.fixture
+def copybook():
+    return Product("copybook", 50, "This is a copybook", 3000)
+
+@pytest.fixture
+def pencil():
+    return Product("pencil", 25, "This is a pencil", 1000)
+
+@pytest.fixture
+def cart():
+    cart = Cart()
+    return cart
+
 
 class TestProducts:
     """
@@ -51,19 +64,46 @@ class TestCart:
         Например, негативные тесты, ожидающие ошибку (используйте pytest.raises, чтобы проверить это)
     """
 
-    def test_add_product(self, product):
-        cart = Cart()
+    def test_add_product(self, product, cart):
+        # cart = Cart()
         assert cart.add_product(product, quantity=5) == ['book', 5]
         assert cart.add_product(product, quantity=100) == ['book', 105]
 
 
-    def test_remove_product(self, product: Product, quantity=None):
-        cart = Cart()
+    def test_remove_product(self, product: Product, cart, quantity=None):
+        # cart = Cart()
 
-        assert cart.remove_product(product) == 'Nothing removed from cart'  #продукт не добавлен в корзину, нечего удалять
+        assert cart.remove_product(product) == 'nothing removed from cart'
 
         cart.add_product(product, 5)
-        assert cart.remove_product(product) == 'book was removed from cart. Reason: product quantity to buy not received'  #продукт удаляется, тк не указано количество
+        assert cart.remove_product(product) == 'product removed from cart, quantity to buy not received'
 
         cart.add_product(product, 1)
-        assert cart.remove_product(product, 2000) == 'book was removed from cart. Reason: product quantity to buy is more than stock'  #продукт удаляется, тк указано количество больше чем на складе
+        assert cart.remove_product(product, 5000) == 'product removed from cart, quantity to buy more than stock'
+
+
+    def test_clear(self, product, copybook, pencil, cart):
+        # cart = Cart()
+        cart.add_product(copybook, 150)
+        cart.add_product(pencil, 300)
+        cart.clear()
+
+        assert cart.products == {}
+
+
+    def test_get_total_price(self, product, copybook, pencil, cart):
+        # cart = Cart()
+        cart.add_product(product, 1)
+        cart.add_product(copybook, 2)
+        cart.add_product(pencil, 4)
+        print(cart.products)
+        print(cart.get_total_price())
+        assert cart.get_total_price() == 300, 'Total price not correct'
+
+
+    def test_buy(self, product, copybook, pencil, cart):
+        cart.add_product(product, 1)
+        cart.add_product(copybook, 2)
+        cart.add_product(pencil, 4)
+
+        assert cart.buy() == (300, None), 'buy() method did not work correctly'
