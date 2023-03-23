@@ -44,16 +44,17 @@ class TestProducts:
     def test_product_buy(self, product):
         # TODO напишите проверки на метод buy
         less_quantity = product.quantity - 1
+        assert product.buy(less_quantity) == 1, 'failed with less quantity'
+
         equal_quantity = product.quantity
-        assert product.buy(less_quantity) == 1
-        assert product.buy(equal_quantity) == 0
+        assert product.buy(equal_quantity) == 0, 'failed with equal quantity'
 
     def test_product_buy_more_than_available(self, product):
         # TODO напишите проверки на метод buy,
         #  которые ожидают ошибку ValueError при попытке купить больше, чем есть в наличии
         more_quantity = product.quantity + 1
         with pytest.raises(ValueError):
-            assert product.buy(more_quantity) is ValueError
+            assert product.buy(more_quantity) is ValueError, 'failed whith quantity more then stock'
 
 
 class TestCart:
@@ -66,20 +67,20 @@ class TestCart:
 
     def test_add_product(self, product, cart):
         # cart = Cart()
-        assert cart.add_product(product, quantity=5) == ['book', 5]
-        assert cart.add_product(product, quantity=100) == ['book', 105]
+        assert cart.add_product(product, quantity=5) == ['book', 5], 'failed with adding to empty cart'
+        assert cart.add_product(product, quantity=100) == ['book', 105], 'failed with adding to product in cart'
 
 
     def test_remove_product(self, product: Product, cart, quantity=None):
         # cart = Cart()
 
-        assert cart.remove_product(product) == 'nothing removed from cart'
+        assert cart.remove_product(product) == 'nothing removed from cart', 'not correct with empty cart'
 
         cart.add_product(product, 5)
-        assert cart.remove_product(product) == 'product removed from cart, quantity to buy not received'
+        assert cart.remove_product(product) == 'product removed from cart, quantity to buy not received', 'not correct with quanttity not received'
 
         cart.add_product(product, 1)
-        assert cart.remove_product(product, 5000) == 'product removed from cart, quantity to buy more than stock'
+        assert cart.remove_product(product, 5000) == 'product removed from cart, quantity to buy more than stock', 'not correct with quantity more than stock'
 
 
     def test_clear(self, product, copybook, pencil, cart):
@@ -88,7 +89,7 @@ class TestCart:
         cart.add_product(pencil, 300)
         cart.clear()
 
-        assert cart.products == {}
+        assert cart.products == {}, 'cart not empty'
 
 
     def test_get_total_price(self, product, copybook, pencil, cart):
@@ -98,6 +99,7 @@ class TestCart:
         cart.add_product(pencil, 4)
         print(cart.products)
         print(cart.get_total_price())
+
         assert cart.get_total_price() == 300, 'Total price not correct'
 
 
@@ -106,4 +108,10 @@ class TestCart:
         cart.add_product(copybook, 2)
         cart.add_product(pencil, 4)
 
-        assert cart.buy() == (300, None), 'buy() method did not work correctly'
+        assert cart.buy() == (300, None), 'buy() method worked not correct'
+
+
+    def test_buy_more_than_stock(self, product, cart):
+        cart.add_product(product, product.quantity + 1)
+        with pytest.raises(ValueError):
+            assert cart.buy() is ValueError, 'failed whith quantity more then stock'
