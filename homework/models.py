@@ -13,14 +13,12 @@ class Product:
         self.description = description
         self.quantity = quantity
 
-
     def check_quantity(self, quantity) -> bool:
         """
         TODO Верните True если количество продукта больше или равно запрашиваемому
             и False в обратном случае
         """
         return self.quantity >= quantity
-
 
     def buy(self, quantity):
         """
@@ -32,10 +30,6 @@ class Product:
             self.quantity -= quantity
         else:
             raise ValueError
-
-        return self.quantity
-
-
 
     def __hash__(self):
         return hash(self.name + self.description)
@@ -64,8 +58,7 @@ class Cart:
         else:
             self.products[product] += quantity
 
-        return [product.name, self.products[product]]
-
+        # return [product.name, self.products[product]]
 
     def remove_product(self, product: Product, quantity=None):
         """
@@ -73,27 +66,17 @@ class Cart:
         Если quantity не передан, то удаляется вся позиция
         Если quantity больше, чем количество продуктов в позиции, то удаляется вся позиция
         """
-
         if product in self.products and quantity is None:
             self.products.pop(product)
-            text = 'product removed from cart, quantity to buy not received'
         elif product in self.products and quantity > product.quantity:
             self.products.pop(product)
-            text = 'product removed from cart, quantity to buy more than stock'
-        else:
-            text = 'nothing removed from cart'
-
-        return text
-
 
     def clear(self):
         self.products.clear()
-        return self.products
-
 
     def get_total_price(self) -> float:
-        return sum(self.products[product] * product.price for product in self.products)
-
+        return sum(self.products[product] * product.price for product in
+                   self.products)
 
     def buy(self):
         """
@@ -105,7 +88,9 @@ class Cart:
         for product in self.products:
             if self.products[product] > product.quantity:
                 raise ValueError
+            else:
 
-        total_price = sum(value * key.price for key, value in self.products.items())
+                product.quantity -= self.products[product]
 
-        return total_price, self.products.clear()
+        # buy_cart = self.get_total_price()
+        # self.products.clear()
