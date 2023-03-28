@@ -38,15 +38,15 @@ class TestProducts:
 
         equal_quantity = product.quantity
         assert product.check_quantity(
-            equal_quantity) is True, 'check_quantity() working not correct with equal_quantity'
+            equal_quantity) is True, 'not correct with quantity equal product.quantity'
 
         less_quantity = product.quantity - 1
         assert product.check_quantity(
-            less_quantity) is True, 'check_quantity() working not correct with less_quantity'
+            less_quantity) is True, 'not correct with quantity less than product.quantity'
 
         more_quantity = product.quantity + 1
         assert product.check_quantity(
-            more_quantity) is False, 'check_quantity() working not correct with more_quantity'
+            more_quantity) is False, 'not correct with quantity more than product.quantity'
 
     def test_product_buy(self, product):
         # TODO напишите проверки на метод buy
