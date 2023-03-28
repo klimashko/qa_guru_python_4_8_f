@@ -1,9 +1,10 @@
-"""
-Протестируйте классы из модуля homework/models.py
-"""
 import pytest
 
 from homework.models import Product, Cart
+
+"""
+Протестируйте классы из модуля homework/models.py
+"""
 
 
 @pytest.fixture
@@ -80,7 +81,8 @@ class TestCart:
         assert cart.products[pencil] == 5, 'failed with adding to empty cart'
 
         cart.add_product(pencil, quantity=100)
-        assert cart.products[pencil] == 105, 'failed with adding to product in cart'
+        assert cart.products[
+                   pencil] == 105, 'failed with adding to product in cart'
 
     def test_remove_product(self, product: Product, cart, quantity=None):
         cart.clear()
@@ -115,7 +117,8 @@ class TestCart:
         cart.add_product(pencil, 4)
         cart.buy()
 
-        assert cart.get_total_price() == float(300), 'buy() method give out not correct total_price'
+        assert cart.get_total_price() == float(
+            300), 'buy() method give out not correct total_price'
         assert pencil.quantity == 996, 'product quantity not correct after buying cart'
         assert copybook.quantity == 2998, 'product quantity not correct after buying cart'
 

@@ -1,3 +1,7 @@
+from dataclasses import dataclass
+
+
+@dataclass
 class Product:
     """
     Класс продукта
@@ -6,12 +10,6 @@ class Product:
     price: float
     description: str
     quantity: int
-
-    def __init__(self, name, price, description, quantity):
-        self.name = name
-        self.price = price
-        self.description = description
-        self.quantity = quantity
 
     def check_quantity(self, quantity) -> bool:
         """
@@ -58,8 +56,6 @@ class Cart:
         else:
             self.products[product] += quantity
 
-        # return [product.name, self.products[product]]
-
     def remove_product(self, product: Product, quantity=None):
         """
         Метод удаления продукта из корзины.
@@ -84,13 +80,8 @@ class Cart:
         Учтите, что товаров может не хватать на складе.
         В этом случае нужно выбросить исключение ValueError
         """
-
         for product in self.products:
             if self.products[product] > product.quantity:
                 raise ValueError
             else:
-
                 product.quantity -= self.products[product]
-
-        # buy_cart = self.get_total_price()
-        # self.products.clear()
